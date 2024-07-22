@@ -35,7 +35,10 @@ function mytheme_setup() {
 	//'aside', 'audio', 'chat', 'gallery', 'image', 'link', 'quote', 'status', 'video'
 
 	// This theme uses wp_nav_menu() in one location.
-	register_nav_menu( 'primary', __( 'Navigation Menu', 'mytheme' ) );
+	register_nav_menus(array(
+		'headerMenu' => __( 'Header Menu' ),
+		'footerMenu'  => __( 'Footer Menu' ),
+	  ));
 
 	/*
 	 * This theme uses a custom image size for featured images, displayed on
@@ -197,7 +200,82 @@ add_action( 'template_redirect', 'mytheme_content_width' );
 
 
 /// FUNCTION
+// HEADER MENU NAVIGATION 
+function MaMedical_header_menu_nav(){
+	$menu_name = 'primary'; 
+	$locations = get_nav_menu_locations(); 
+	
+	if (isset($locations[$menu_name])):
+		$menu_id = $locations[$menu_name]; 
+		$menu_items = wp_get_nav_menu_items($menu_id);
+		if ($menu_items):
+			foreach ($menu_items as $item):?>
+				<li><a href=<?php echo esc_url($item->url)?>><?php echo esc_html($item->title) ?></a></li>
+			<?php endforeach;
+		endif; 
+	endif;  
+}
 
+// THEME PAGINATION FUNCTION
+function theme_pagination($post_query = null)
+{
+	global $paged, $wp_query;
+
+	$translate['next'] = '次へ';
+	$translate['prev'] = '前へ';
+	$translate['first'] ='';
+	$translate['end'] ='';
+
+	if (empty($paged))
+		$paged = 1;
+	$prev = $paged - 1;
+	$next = $paged + 1;
+
+	$end_size = 1;
+	$mid_size = 2;
+	$show_all = false;
+	$dots = false;
+
+	$pagi_query = $wp_query;
+	if (isset($post_query) && $post_query) {
+		$pagi_query = $post_query;
+	}
+
+	if (!$total = $pagi_query->max_num_pages)
+		$total = 1;
+
+	if ($total > 1) {
+		echo '<div class="pagingNav hira">';
+		
+
+		if ($paged > 1) {
+			echo '<p class="prev"><a href="' . previous_posts(false) . '">' . $translate['prev'] . '</a></p>';
+		}
+		echo '<ul class = "pagi_nav_list">';
+		for ($i = 1; $i <= $total; $i++) {
+			if ($i == $paged) {
+				echo '<li class="active"><a>' . $i . '</a></li>';
+				$dots = true;
+			} else {
+				if ($show_all || ($i <= $end_size || ($paged && $i >= $paged - $mid_size && $i <= $paged + $mid_size) || $i > $total - $end_size)) {
+					echo '<li><a href="' . get_pagenum_link($i) . '">' . $i . '</a></li>';
+					$dots = true;
+				} elseif ($dots && !$show_all) {
+					echo '<li class="dots"><a>...</a></li>';
+					$dots = false;
+				}
+			}
+		}
+		echo '</ul>';
+		
+		if ($paged < $total) {
+			echo '<p class="next"><a href="' . next_posts(0, false) . '">' . $translate['next'] . '</a></p>';
+		}
+
+		
+		echo '</div>';
+	}
+}
 /// ACTION
 // LOADING CSS AND JS 
 add_action('wp_enqueue_scripts', 'load_assets');
@@ -206,17 +284,19 @@ function load_assets()
 	if (is_home() || is_front_page()) {
 		wp_enqueue_style('index-style', get_template_directory_uri() . '/assets/css/index.css');
 	} elseif (is_single()) {
-		wp_enqueue_style('single-style', get_template_directory_uri() . '/assets/css/detail.css');
+		wp_enqueue_style('single-style', get_template_directory_uri() . '/assets/css/doctor-detail.css');
 	} elseif (is_page('list')) {
-		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/list.css');
+		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/doctor-list.css');
+	} elseif (is_page('page')) {
+		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/index.css');
 	} else{
-		wp_enqueue_style('index-style', get_template_directory_uri() . '/assets/css/list.css');
+		wp_enqueue_style('index-style', get_template_directory_uri() . '/assets/css/doctor-list.css');
 	}
 
 	wp_enqueue_style('maincommoncss', get_theme_file_uri() . '/assets/css/common.css');
 	wp_enqueue_style('mainjquerycss', get_theme_file_uri() . '/assets/css/jquery.bxslider.css');
 	wp_enqueue_script('jqueryjs', get_theme_file_uri() . "/assets/js/jquery-1.11.0.min.js", array(), '1.0', array('in_footer' => false));
-	// wp_enqueue_script('jquerybxsliderjs', get_theme_file_uri() . "/assets/js/jquery.bxslider.min.js", array('jqueryjs'), '1.0', array('in_footer' => false));
+	// wp_enqueue_script('jquerybxsliderjs', get_theme_file_uri() . "/assets/js/jquery.bxslider.mi	n.js", array('jqueryjs'), '1.0', array('in_footer' => false));
 	wp_enqueue_script('mainjs', get_theme_file_uri() . "/assets/js/script.js", array('jqueryjs'), '1.0', array('in_footer' => false));
 }
 

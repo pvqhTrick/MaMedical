@@ -38,7 +38,7 @@
     <div class="mainMenu">
         <div class="inner">
             <ul class="menu">
-                <li class="current-menu-item"><a href="#">TOP</a></li>
+                <li class="current-menu-item"><a href="<?php echo home_url() ?>">TOP</a></li>
                 <li class="menu-item-has-children">
                     <a href="#">サービスについて</a>
                     <ul class="sub-menu"> 
@@ -47,12 +47,14 @@
                         <li><a href="#">ご利用の流れ</a></li>
                     </ul>
                 </li>
-                <li><a href="#">料金</a></li>
+                <!-- <li><a href="#">料金</a></li>
                 <li><a href="#">医師一覧</a></li>
                 <li><a href="#">よくある質問</a></li>
                 <li><a href="#">お客様の声</a></li>
-                <li><a href="#">運営会社</a></li>
+                <li><a href="#">運営会社</a></li> -->
+                <?php MaMedical_header_menu_nav(); ?>
             </ul>
+            
         </div>
     </div>
 </div>
