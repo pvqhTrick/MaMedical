@@ -216,6 +216,15 @@ function MaMedical_header_menu_nav(){
 	endif;  
 }
 
+// GET DEFAULT IMAGE
+function the_default_thumbnail($gender = true){
+	if(!$gender)
+		echo '<img src="' .get_theme_file_uri() . ('/assets/images/doctor/ava-men'). '">';
+	else
+		echo '<img src="' .get_theme_file_uri() . ('/assets/images/doctor/ava-women'). '">';
+}
+
+
 // THEME PAGINATION FUNCTION
 function theme_pagination($post_query = null)
 {
@@ -246,12 +255,12 @@ function theme_pagination($post_query = null)
 
 	if ($total > 1) {
 		echo '<div class="pagingNav hira">';
-		
+		echo '<ul class = "pagi_nav_list">';
 
 		if ($paged > 1) {
-			echo '<p class="prev"><a href="' . previous_posts(false) . '">' . $translate['prev'] . '</a></p>';
+			echo '<li class="p-control prev"><a href="' . previous_posts(false) . '">' . $translate['prev'] . '</a></li>';
 		}
-		echo '<ul class = "pagi_nav_list">';
+		
 		for ($i = 1; $i <= $total; $i++) {
 			if ($i == $paged) {
 				echo '<li class="active"><a>' . $i . '</a></li>';
@@ -266,16 +275,70 @@ function theme_pagination($post_query = null)
 				}
 			}
 		}
-		echo '</ul>';
+		
 		
 		if ($paged < $total) {
-			echo '<p class="next"><a href="' . next_posts(0, false) . '">' . $translate['next'] . '</a></p>';
+			echo '<li class="p-control next"><a href="' . next_posts(0, false) . '">' . $translate['next'] . '</a></li>';
 		}
 
-		
+		echo '</ul>';
 		echo '</div>';
 	}
 }
+// CUSTOM BREADCRUMBS
+function custom_breadcrumbs() {
+    $separator          = '>';
+    $home_title         = 'single';
+    
+    // Get the query & post information
+    global $post,$wp_query;
+    
+    if ( !is_front_page() ) {
+		echo '<div id="breadCrumb">';
+       	echo '<div class="inner">';
+        echo '<ul class="listBread">';
+
+        echo '<li><a href="' . get_home_url() . '">TOP</a></li>';
+        
+		if ( is_page(47) ) {
+            // Standard page
+            if ( $post->post_parent ) {
+                // If child page, get parents 
+                $anc = get_post_ancestors( $post->ID );
+                // Get parents in the right order
+                $anc = array_reverse($anc);
+                // Parent page loop
+                foreach ( $anc as $ancestor ) {
+                    $parents .= '<li class="item-parent item-parent-' . $ancestor . '"><a class="bread-parent bread-parent-' . $ancestor . '" href="' . get_permalink($ancestor) . '" title="' . get_the_title($ancestor) . '">' . get_the_title($ancestor) . '</a></li>';
+                    $parents .= '<li class="separator separator-' . $ancestor . '"> ' . $separator . ' </li>';
+                }
+                // Display parent pages
+                echo $parents;
+                // Current page
+                echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
+            } else {
+                // Just display current page if not parents
+                echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
+            }
+        }
+
+        if ( is_single() ) {
+            $category = get_the_category();
+            if ( !empty( $category ) ) {
+                $cat_link = get_category_link( $category[0]->term_id );
+				echo '<li> ' . $separator . ' </li>';
+                echo '<li><a class="bread-cat bread-cat-' . $category[0]->term_id . ' bread-cat-' . $category[0]->slug . '" href="' . $cat_link . '" title="' . $category[0]->name . '">' . $category[0]->name . '</a></li>';
+            }
+            echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
+        } 
+		
+        echo '</ul>';
+		echo '</div>';
+		echo '</div>';
+    }
+}
+
+
 /// ACTION
 // LOADING CSS AND JS 
 add_action('wp_enqueue_scripts', 'load_assets');
@@ -285,6 +348,8 @@ function load_assets()
 		wp_enqueue_style('index-style', get_template_directory_uri() . '/assets/css/index.css');
 	} elseif (is_single()) {
 		wp_enqueue_style('single-style', get_template_directory_uri() . '/assets/css/doctor-detail.css');
+		wp_enqueue_script('jquerybxsliderjs', get_theme_file_uri() . "/assets/js/jquery.bxslider.min.js", array('jqueryjs'), '1.0', array('in_footer' => false));
+
 	} elseif (is_page('list')) {
 		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/doctor-list.css');
 	} elseif (is_page('page')) {

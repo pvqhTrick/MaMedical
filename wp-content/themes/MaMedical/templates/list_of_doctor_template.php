@@ -5,14 +5,9 @@ Template Name: List of Doctor Template
 ?>
 <?php get_header() ?>
 <div id="fixH"></div>
-<div id="breadCrumb">
-    <div class="inner">
-        <ul class="listBread">
-            <li><a href="<?php echo home_url() ?>">TOP</a></li>
-            <li>医師一覧</li>
-        </ul>
-    </div>
-</div>
+<?php if (function_exists('custom_breadcrumbs')) {
+    custom_breadcrumbs();
+} ?>
 <!-- #breadCrumb -->
 <div id="main">
     <div class="inner">
@@ -34,35 +29,40 @@ Template Name: List of Doctor Template
             </div>
         </div>
         <!-- .doctorIntro -->
+         
         <?php get_template_part('template-part/form-search-box'); ?> 
+        <!-- form search -->
 
+        <?php 
+        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+        $args = array (
+            'post_type' => 'doctor',
+            'posts_per_page' => '5',
+            'paged' => $paged,
+            'meta_key' => '医師No.',
+            'orderby' => 'meta_value_num', 
+            'order' => 'ASC'
+        );
+        $listDoctors = new WP_Query($args);
+        ?>
+
+        <?php if($listDoctors->have_posts()): ?>
         <div class="formResult">
             <div class="inner">
                 <div class="listResult">
-                    <?php get_template_part('template-part/doctor-item'); ?>
-                    <?php get_template_part('template-part/doctor-item'); ?>
-                    <?php get_template_part('template-part/doctor-item'); ?>
-                    <?php get_template_part('template-part/doctor-item'); ?>
-                    <?php get_template_part('template-part/doctor-item'); ?>
+                    <?php while($listDoctors->have_posts()): $listDoctors->the_post(); ?>
+                        <?php get_template_part('template-part/doctor-item'); ?>
+                    <?php endwhile; wp_reset_postdata(); ?>
+
+                    <?php echo theme_pagination($listDoctors); ?>
                 </div>
-                <?php echo theme_pagination(); ?>
-                <!-- <div class="pagingNav hira">
-                    <ul class="pagi_nav_list">
-                        <li class="active"><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li class="p-control next"><a href="#">最後</a></li>
-                        <li class="p-control prev"><a href="#">次へ</a></li>
-                    </ul>
-                </div> -->
                 <div class="boxBook">
                     <h3 class="titleBook">医師の詳細なプロフィールは<br>医師への相談・面談予約<br class="sp">お申込み時に<br class="sp">ご確認いただけます。</h3>
                     <p class="btnBook"><a href="#" class="hover">医師への相談・<br class="sp">面談予約をする</a></p>
                 </div>
             </div>
         </div>
+        <?php endif; ?>
         <!-- .formResult -->
     </div>
     <!-- .areaListDoctor -->
