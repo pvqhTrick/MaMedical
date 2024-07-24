@@ -39,7 +39,7 @@ Template Name: List of Doctor Template
             'post_type' => 'doctor',
             'posts_per_page' => '5',
             'paged' => $paged,
-            'meta_key' => '医師No.',
+            'meta_key' => 'doctor_no',
             'orderby' => 'meta_value_num', 
             'order' => 'ASC'
         );

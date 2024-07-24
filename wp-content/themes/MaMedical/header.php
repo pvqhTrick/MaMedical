@@ -40,18 +40,11 @@
     </div>
     <div class="mainMenu">
         <div class="inner">
-            <ul class="menu">
+            <!-- <ul class="menu">
                 <li class="current-menu-item"><a href="<?php echo home_url() ?>">TOP</a></li>
-                <li class="menu-item-has-children">
-                    <a href="#">サービスについて</a>
-                    <ul class="sub-menu"> 
-                        <li><a href="#">MAオンライン<br>セカンドオピニオン<br>サービスとは</a></li>
-                        <li><a href="#">医師へのメール相談<br>サービスとは</a></li>
-                        <li><a href="#">ご利用の流れ</a></li>
-                    </ul>
-                </li>
-                <?php MaMedical_header_menu_nav(); ?>
-            </ul>
+            
+            </ul> -->
+            <?php wp_nav_menu(['theme_location'=>'headerMenu', 'container'=>'']); ?>
         </div>
     </div>
 </div>

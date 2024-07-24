@@ -1,3 +1,8 @@
+<?php
+/*
+Template Name: List of Doctor Template
+*/
+?>
 <?php get_header() ?>
 <div id="fixH"></div>
 <?php if (function_exists('custom_breadcrumbs')) {
@@ -14,7 +19,8 @@
     <div class="areaListDoctor pageBG">
         <div class="doctorIntro">
             <div class="inner">
-                <h3 class="areaTitleLead">医師一覧</h3>
+                <h3 class="areaTitleLead">
+                </h3>
                 <p class="txtDoc">MAメディカル相談サービス</p>
                 <ul class="listDoc">
                     <li>MAオンライン・セカンドオピニオンサービス（医師とオンライン面談）</li>

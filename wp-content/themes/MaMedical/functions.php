@@ -37,7 +37,9 @@ function mytheme_setup() {
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus(array(
 		'headerMenu' => __( 'Header Menu' ),
-		'footerMenu'  => __( 'Footer Menu' ),
+		'footerMenu1'  => __( 'Footer Menu 1' ),
+		'footerMenu2'  => __( 'Footer Menu 2' ),
+		'footerMenu3'  => __( 'Footer Menu 3' ),
 	  ));
 
 	/*
@@ -197,20 +199,43 @@ function mytheme_content_width() {
 }
 add_action( 'template_redirect', 'mytheme_content_width' );
 
+// SHOW CATEGORY
+function show_category( $category = 'null' ){
+$categories = wp_get_post_terms(get_the_ID(), $category);
+if ($categories): ?>
+    <ul class="rFList">
+        <?php foreach ($categories as $item): ?>
+            <li><?php echo $item->name ?></li>
+        <?php endforeach; ?>
+    </ul>
 
+<?php endif; 
+}
 
 /// FUNCTION
 // HEADER MENU NAVIGATION 
 function MaMedical_header_menu_nav(){
-	$menu_name = 'primary'; 
+	$menu_name = 'headerMenu'; 
 	$locations = get_nav_menu_locations(); 
 	
 	if (isset($locations[$menu_name])):
 		$menu_id = $locations[$menu_name]; 
 		$menu_items = wp_get_nav_menu_items($menu_id);
 		if ($menu_items):
-			foreach ($menu_items as $item):?>
-				<li><a href=<?php echo esc_url($item->url)?>><?php echo esc_html($item->title) ?></a></li>
+			foreach ($menu_items as $item):
+				if(has_sub_field($menu_name, $menu_id)): ?>
+				<li class="menu-item-has-children">
+					<a href=<?php echo esc_url($item->url)?>><?php echo esc_html($item->title) ?></a>
+					<ul class="sub-menu">
+						<li><a href="#">オンライン<br>セカンドオピニオン<br>とは</a></li>
+						<li><a href="#">医師へのメール相談<br>とは</a></li>
+						<li><a href="#">ご利用の流れ</a></li>
+                    </ul>
+				</li>
+
+				<?php else: ?>
+					<li><a href=<?php echo esc_url($item->url)?>><?php echo esc_html($item->title) ?></a></li>
+				<?php endif; ?>
 			<?php endforeach;
 		endif; 
 	endif;  
@@ -285,6 +310,24 @@ function theme_pagination($post_query = null)
 		echo '</div>';
 	}
 }
+// CHECK SUB ITEM IN MENU
+function has_sub_menu( array $menu_items, int $id ){
+    foreach ( $menu_items as $menu_item ){
+        if ( (int)$menu_item->menu_item_parent === $id ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// ADD FOOTER MENU
+function register_footer_menu() {
+    register_nav_menu('footer-menu-1', __('Footer Menu 1'));
+    register_nav_menu('footer-menu-2', __('Footer Menu 2'));
+    register_nav_menu('footer-menu-3', __('Footer Menu 3'));
+}
+add_action('init', 'register_footer_menu');
+
 // CUSTOM BREADCRUMBS
 function custom_breadcrumbs() {
     $separator          = '>';
@@ -300,35 +343,13 @@ function custom_breadcrumbs() {
 
         echo '<li><a href="' . get_home_url() . '">TOP</a></li>';
         
-		if ( is_page(47) ) {
-            // Standard page
-            if ( $post->post_parent ) {
-                // If child page, get parents 
-                $anc = get_post_ancestors( $post->ID );
-                // Get parents in the right order
-                $anc = array_reverse($anc);
-                // Parent page loop
-                foreach ( $anc as $ancestor ) {
-                    $parents .= '<li class="item-parent item-parent-' . $ancestor . '"><a class="bread-parent bread-parent-' . $ancestor . '" href="' . get_permalink($ancestor) . '" title="' . get_the_title($ancestor) . '">' . get_the_title($ancestor) . '</a></li>';
-                    $parents .= '<li class="separator separator-' . $ancestor . '"> ' . $separator . ' </li>';
-                }
-                // Display parent pages
-                echo $parents;
-                // Current page
-                echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
-            } else {
-                // Just display current page if not parents
-                echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
-            }
+		if ( is_post_type_archive('doctor')) {
+            echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
+           
         }
 
         if ( is_single() ) {
-            $category = get_the_category();
-            if ( !empty( $category ) ) {
-                $cat_link = get_category_link( $category[0]->term_id );
-				echo '<li> ' . $separator . ' </li>';
-                echo '<li><a class="bread-cat bread-cat-' . $category[0]->term_id . ' bread-cat-' . $category[0]->slug . '" href="' . $cat_link . '" title="' . $category[0]->name . '">' . $category[0]->name . '</a></li>';
-            }
+			echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
             echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
         } 
 		
