@@ -7,7 +7,7 @@
                     <div class="formField">
                         <p class="formLabel">専門分野</p>
                         <div class="formInput">
-                            <select name="" class="formInputSelect">
+                            <select name="specialty" class="formInputSelect">
                                 <option value="">選択してください</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -17,7 +17,7 @@
                     <div class="formField">
                         <p class="formLabel">対応可能な疾患</p>
                         <div class="formInput">
-                            <input type="text" name="" class="formInputText" placeholder="疾患名を入力してください">
+                            <input type="text" name="disease" class="formInputText" placeholder="疾患名を入力してください">
                         </div>
                     </div>
                     <input type="submit" class="formInputSubmit hover" value="この条件で検索する">
@@ -26,4 +26,3 @@
         </div>
     </div>
 </div>
-.formSearch

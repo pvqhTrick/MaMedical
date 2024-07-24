@@ -115,89 +115,6 @@ function mytheme_paging_nav() {
 }
 endif;
 
-if ( ! function_exists( 'mytheme_post_nav' ) ) :
-/**
- * Display navigation to next/previous post when applicable.
-*/
-function mytheme_post_nav() {
-	global $post;
-
-	// Don't print empty markup if there's nowhere to navigate.
-	$previous = ( is_attachment() ) ? get_post( $post->post_parent ) : get_adjacent_post( false, '', true );
-	$next     = get_adjacent_post( false, '', false );
-
-	if ( ! $next && ! $previous )
-		return;
-	?>
-	<nav class="navigation post-navigation" role="navigation">
-		<h1 class="screen-reader-text"><?php _e( 'Post navigation', 'mytheme' ); ?></h1>
-		<div class="nav-links">
-
-			<?php previous_post_link( '%link', _x( '<span class="meta-nav">&larr;</span> %title', 'Previous post link', 'mytheme' ) ); ?>
-			<?php next_post_link( '%link', _x( '%title <span class="meta-nav">&rarr;</span>', 'Next post link', 'mytheme' ) ); ?>
-
-		</div><!-- .nav-links -->
-	</nav><!-- .navigation -->
-	<?php
-}
-endif;
-
-if ( ! function_exists( 'mytheme_entry_meta' ) ) :
-/**
- * Print HTML with meta information for current post: categories, tags, permalink, author, and date.
- *
- * Create your own mytheme_entry_meta() to override in a child theme.
- */
-function mytheme_entry_meta() {
-	if ( is_sticky() && is_home() && ! is_paged() )
-		echo '<span class="featured-post">' . __( 'Sticky', 'mytheme' ) . '</span>';
-
-	if ( ! has_post_format( 'link' ) && 'post' == get_post_type() )
-		mytheme_entry_date();
-
-	// Translators: used between list items, there is a space after the comma.
-	$categories_list = get_the_category_list( __( ', ', 'mytheme' ) );
-	if ( $categories_list ) {
-		echo '<span class="categories-links">' . $categories_list . '</span>';
-	}
-
-	// Translators: used between list items, there is a space after the comma.
-	$tag_list = get_the_tag_list( '', __( ', ', 'mytheme' ) );
-	if ( $tag_list ) {
-		echo '<span class="tags-links">' . $tag_list . '</span>';
-	}
-
-	// Post author
-	if ( 'post' == get_post_type() ) {
-		printf( '<span class="author vcard"><a class="url fn n" href="%1$s" title="%2$s" rel="author">%3$s</a></span>',
-			esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ),
-			esc_attr( sprintf( __( 'View all posts by %s', 'mytheme' ), get_the_author() ) ),
-			get_the_author()
-		);
-	}
-}
-endif;
-
-
-function mytheme_excerpt_more( $more ) {
-	$link = sprintf( '<a href="%1$s" class="more-link">%2$s</a>',
-		esc_url( get_permalink( get_the_ID() ) ),
-			/* translators: %s: Name of current post */
-			sprintf( __( 'Continue reading %s <span class="meta-nav">&rarr;</span>', 'mytheme' ), '<span class="screen-reader-text">' . get_the_title( get_the_ID() ) . '</span>' )
-		);
-	return ' &hellip; ' . $link;
-}
-add_filter( 'excerpt_more', 'mytheme_excerpt_more' );
-
-function mytheme_content_width() {
-	global $content_width;
-
-	if ( is_attachment() )
-		$content_width = 724;
-	elseif ( has_post_format( 'audio' ) )
-		$content_width = 484;
-}
-add_action( 'template_redirect', 'mytheme_content_width' );
 
 // SHOW CATEGORY
 function show_category( $category = 'null' ){
@@ -213,33 +130,6 @@ if ($categories): ?>
 }
 
 /// FUNCTION
-// HEADER MENU NAVIGATION 
-function MaMedical_header_menu_nav(){
-	$menu_name = 'headerMenu'; 
-	$locations = get_nav_menu_locations(); 
-	
-	if (isset($locations[$menu_name])):
-		$menu_id = $locations[$menu_name]; 
-		$menu_items = wp_get_nav_menu_items($menu_id);
-		if ($menu_items):
-			foreach ($menu_items as $item):
-				if(has_sub_field($menu_name, $menu_id)): ?>
-				<li class="menu-item-has-children">
-					<a href=<?php echo esc_url($item->url)?>><?php echo esc_html($item->title) ?></a>
-					<ul class="sub-menu">
-						<li><a href="#">オンライン<br>セカンドオピニオン<br>とは</a></li>
-						<li><a href="#">医師へのメール相談<br>とは</a></li>
-						<li><a href="#">ご利用の流れ</a></li>
-                    </ul>
-				</li>
-
-				<?php else: ?>
-					<li><a href=<?php echo esc_url($item->url)?>><?php echo esc_html($item->title) ?></a></li>
-				<?php endif; ?>
-			<?php endforeach;
-		endif; 
-	endif;  
-}
 
 // GET DEFAULT IMAGE
 function the_default_thumbnail($gender = true){
@@ -320,14 +210,6 @@ function has_sub_menu( array $menu_items, int $id ){
     return false;
 }
 
-// ADD FOOTER MENU
-function register_footer_menu() {
-    register_nav_menu('footer-menu-1', __('Footer Menu 1'));
-    register_nav_menu('footer-menu-2', __('Footer Menu 2'));
-    register_nav_menu('footer-menu-3', __('Footer Menu 3'));
-}
-add_action('init', 'register_footer_menu');
-
 // CUSTOM BREADCRUMBS
 function custom_breadcrumbs() {
     $separator          = '>';
@@ -344,13 +226,12 @@ function custom_breadcrumbs() {
         echo '<li><a href="' . get_home_url() . '">TOP</a></li>';
         
 		if ( is_post_type_archive('doctor')) {
-            echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
-           
+            echo '<li><a href=#>医師一覧</a></li>';
         }
 
         if ( is_single() ) {
-			echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
-            echo '<li class="item-current item-' . $post->ID . '"><span class="bread-current bread-' . $post->ID . '" title="' . get_the_title() . '">' . get_the_title() . '</span></li>';
+			echo '<li><a href=#> 医師一覧 </a></li>';
+            echo '<li><span>' . get_the_title() . '</span></li>';
         } 
 		
         echo '</ul>';
@@ -359,6 +240,33 @@ function custom_breadcrumbs() {
     }
 }
 
+// SEARCH DOCTOR BY QUERY
+function search_doctor_query($query) {
+	$meta_query = array('relation' => 'AND');
+	
+	if (!empty($_GET['specialty'])) {
+		$meta_query[] = array(
+			'key' => 'specialty',
+			'value' => sanitize_text_field($_GET['specialty']),
+			'compare' => 'LIKE'
+		);
+	}
+
+	if (!empty($_GET['disease'])) {
+		$meta_query[] = array(
+			'key' => 'disease',
+			'value' => sanitize_text_field($_GET['disease']),
+			'compare' => 'LIKE'
+		);
+	}
+
+	if (!empty($meta_query)) {
+		$query->set('meta_query', $meta_query);
+		$query->set('post_type', 'doctor');
+	}
+
+}
+add_action('pre_get_posts', 'search_doctor_query');
 
 /// ACTION
 // LOADING CSS AND JS 
