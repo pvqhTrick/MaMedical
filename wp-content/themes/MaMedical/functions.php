@@ -130,7 +130,33 @@ if ($categories): ?>
 }
 
 /// FUNCTION
+// HEADER MENU NAVIGATION 
+function MaMedical_header_menu_nav(){
+	$menu_name = 'headerMenu'; 
+	$locations = get_nav_menu_locations(); 
 
+	if (isset($locations[$menu_name])):
+		$menu_id = $locations[$menu_name]; 
+		$menu_items = wp_get_nav_menu_items($menu_id);
+		if ($menu_items):
+			foreach ($menu_items as $item):
+				if(has_sub_field($menu_name, $menu_id)): ?>
+				<li class="menu-item-has-children">
+					<a href=<?php echo esc_url($item->url)?>><?php echo esc_html($item->title) ?></a>
+					<ul class="sub-menu">
+						<li><a href="#">オンライン<br>セカンドオピニオン<br>とは</a></li>
+						<li><a href="#">医師へのメール相談<br>とは</a></li>
+						<li><a href="#">ご利用の流れ</a></li>
+                    </ul>
+				</li>
+
+				<?php else: ?>
+					<li><a href=<?php echo esc_url($item->url)?>><?php echo esc_html($item->title) ?></a></li>
+				<?php endif; ?>
+			<?php endforeach;
+		endif; 
+	endif;  
+}
 // GET DEFAULT IMAGE
 function the_default_thumbnail($gender = true){
 	if(!$gender)
@@ -223,7 +249,7 @@ function custom_breadcrumbs() {
        	echo '<div class="inner">';
         echo '<ul class="listBread">';
 
-        echo '<li><a href="' . get_home_url() . '">TOP</a></li>';
+        echo '<li><a href="' . HOME_URL . '">TOP</a></li>';
         
 		if ( is_post_type_archive('doctor')) {
             echo '<li><a href=#>医師一覧</a></li>';
@@ -239,34 +265,6 @@ function custom_breadcrumbs() {
 		echo '</div>';
     }
 }
-
-// SEARCH DOCTOR BY QUERY
-function search_doctor_query($query) {
-	$meta_query = array('relation' => 'AND');
-	
-	if (!empty($_GET['specialty'])) {
-		$meta_query[] = array(
-			'key' => 'specialty',
-			'value' => sanitize_text_field($_GET['specialty']),
-			'compare' => 'LIKE'
-		);
-	}
-
-	if (!empty($_GET['disease'])) {
-		$meta_query[] = array(
-			'key' => 'disease',
-			'value' => sanitize_text_field($_GET['disease']),
-			'compare' => 'LIKE'
-		);
-	}
-
-	if (!empty($meta_query)) {
-		$query->set('meta_query', $meta_query);
-		$query->set('post_type', 'doctor');
-	}
-
-}
-add_action('pre_get_posts', 'search_doctor_query');
 
 /// ACTION
 // LOADING CSS AND JS 

@@ -32,7 +32,7 @@
 
         <div class="resultField">
             <h3 class="rFTitle">経験年数・経歴など</h3>
-            <p class="rFText"><?php echo get_field('経験年数'); ?>年</p>
+            <p class="rFText"><?php echo get_field('years_of_experience'); ?>年</p>
         </div>
     </div>
 </div>
