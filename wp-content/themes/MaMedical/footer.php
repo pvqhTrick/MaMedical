@@ -1,3 +1,8 @@
+<?php get_template_part('template-part/areaContact'); ?>
+<!-- #areaContact -->
+<?php get_template_part('template-part/fixedSection'); ?>
+<!-- #fixedSection -->
+
 <div id="footer">
         <div class="inner">
             <div class="ftWrapper">

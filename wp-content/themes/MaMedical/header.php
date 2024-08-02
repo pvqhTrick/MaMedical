@@ -20,7 +20,7 @@
     -->
 </head>
 
-<body>
+<body <?php body_class() ?>> 
 
 <div id="header">
     <div class="headerBar">
@@ -51,3 +51,8 @@
     </div>
 </div>
 <!-- #header -->
+<div id="fixH"></div>
+<?php if (function_exists('custom_breadcrumbs') && !is_home()) {
+    custom_breadcrumbs();
+} ?>
+<!-- #breadCrumb -->

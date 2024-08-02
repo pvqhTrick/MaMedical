@@ -109,7 +109,6 @@ function the_default_thumbnail($gender = true){
 		echo '<img src="' .get_theme_file_uri() . ('/assets/images/doctor/ava-women'). '">';
 }
 
-
 // THEME PAGINATION FUNCTION
 function theme_pagination($post_query = null)
 {
@@ -170,15 +169,6 @@ function theme_pagination($post_query = null)
 		echo '</div>';
 	}
 }
-// CHECK SUB ITEM IN MENU
-function has_sub_menu( array $menu_items, int $id ){
-    foreach ( $menu_items as $menu_item ){
-        if ( (int)$menu_item->menu_item_parent === $id ) {
-            return true;
-        }
-    }
-    return false;
-}
 
 // CUSTOM BREADCRUMBS
 function custom_breadcrumbs() {
@@ -203,60 +193,88 @@ function custom_breadcrumbs() {
 			echo '<li><a href=#> 医師一覧 </a></li>';
             echo '<li><span>' . get_the_title() . '</span></li>';
         } 
-		
+		if ( is_page('faq') ) {
+			echo '<li><a href=#> よくある質問 </a></li>';
+            echo '<li><span>' . get_the_title() . '</span></li>';
+        } 
         echo '</ul>';
 		echo '</div>';
 		echo '</div>';
     }
 }
 
-// Add custom rewrite rules
-function doctor_custom_rewrite_rule() {
-    add_rewrite_rule(
-        '^doctor/([0-9]+)/?$',
-        'index.php?&doctor_no=$matches[1]',
-        'top'
-    );
-}
-add_action('init', 'doctor_custom_rewrite_rule');
+// // Add custom rewrite rules
+// function doctor_custom_rewrite_rule() {
+//     add_rewrite_rule(
+//         '^doctor/([0-9]+)/?$',
+//         'single-doctor.php?post-type=doctor&doctor_no=$matches[1]',
+//         'top'
+//     );	
+// }
+// add_action('init', 'doctor_custom_rewrite_rule');
 
-// Add custom query vars
-function add_custom_query_vars($vars) {
-    $vars[] = 'doctor_no';
-	// var_dump($vars);
-    return $vars;
-}
-add_filter('query_vars', 'add_custom_query_vars');
+// // Add custom query vars
+// function add_custom_query_vars($vars) {
+//     $vars[] = 'doctor_no';
+// 	// var_dump($vars);
+//     return $vars;
+// }
+// add_filter('query_vars', 'add_custom_query_vars');
 
 // Modify the query to load the correct post
-function doctor_custom_query($query) {
-    if (!is_admin() && $query->is_main_query() && isset($query->query_vars['doctor_no'])) {
-        $doctor_number = $query->query_vars['doctor_no'];
-        $meta_query = array(
-            array(
-                'key' => 'doctor_no',
-                'value' => $doctor_number,
-                'compare' => '='
-            )
-        );
-		// `var_dump($meta_query);
-        $query->set('meta_query', $meta_query);
-    }
-}
-add_action('pre_get_posts', 'doctor_custom_query');
+// function doctor_custom_query($query) {
+//     if (!is_admin() && $query->is_main_query() && isset($query->query_vars['doctor_no'])) {
+//         $doctor_number = $query->query_vars['doctor_no'];
+//         $meta_query = array(
+//             array(
+//                 'key' => 'doctor_no',
+//                 'value' => $doctor_number,
+//                 'compare' => '='
+//             )
+//         );
+// 		// `var_dump($meta_query);
+//         $query->set('meta_query', $meta_query);
+//     }
+// }
+// add_action('pre_get_posts', 'doctor_custom_query');
 
-// Modify the permalink structure
-function doctor_post_type_link($post_link, $post) {
-    if ($post->post_type == 'doctor') {
-        $doctor_number = get_field('doctor_no', $post->ID);
-        if ($doctor_number) {
-            return home_url('doctor/' . $doctor_number . '/');
-            // return home_url('doctor/001/');
-        }
+// // Modify the permalink structure
+// function doctor_post_type_link($post_link, $post) {
+//     if ($post->post_type == 'doctor') {
+//         $doctor_number = get_field('doctor_no', $post->ID);
+//         if ($doctor_number) {
+//             return home_url('doctor/' . $doctor_number . '/');
+//         }
+//     }
+//     return $post_link;
+// }
+// add_filter('post_type_link', 'doctor_post_type_link', 1, 2);
+
+function populate_doctor_select_field($form_tag) {
+    if ($form_tag['name'] != 'your-doctor') {
+        return $form_tag;
     }
-    return $post_link;
+    $args = array(
+        'post_type' => 'doctor',
+        'posts_per_page' => 3,
+        'orderby' => 'date',
+        'order' => 'DESC'
+    );
+
+    $doctor_posts = get_posts($args);
+    if ($doctor_posts) {
+        $options = array();
+        foreach ($doctor_posts as $post) {
+            $doctor_name = get_the_title($post->ID);
+            $options[] = $doctor_name;
+        }
+        $form_tag['raw_values'] = $options;
+        $form_tag['values'] = $options;
+    }
+
+    return $form_tag;
 }
-add_filter('post_type_link', 'doctor_post_type_link', 1, 2);
+add_filter('wpcf7_form_tag', 'populate_doctor_select_field');
 
 
 /// ACTION
@@ -270,12 +288,15 @@ function load_assets()
 		wp_enqueue_style('single-style', get_template_directory_uri() . '/assets/css/doctor-detail.css');
 		wp_enqueue_script('jquerybxsliderjs', get_theme_file_uri() . "/assets/js/jquery.bxslider.min.js", array('jqueryjs'), '1.0', array('in_footer' => false));
 
-	} elseif (is_page('list')) {
+	} elseif (is_post_type_archive('doctor')) {
 		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/doctor-list.css');
-	} elseif (is_page('page')) {
-		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/index.css');
-	} else{
-		wp_enqueue_style('index-style', get_template_directory_uri() . '/assets/css/doctor-list.css');
+	} elseif (is_page('contact-form')) {
+		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/doctor-list.css');
+	
+	} elseif (is_page('faq')) {
+		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/faq.css');
+	}  else{
+		wp_enqueue_style('index-style', get_template_directory_uri() . '/assets/css/index.css');
 	}
 
 	wp_enqueue_style('maincommoncss', get_theme_file_uri() . '/assets/css/common.css');

@@ -1,10 +1,4 @@
 <?php get_header() ?>
-
-<div id="fixH"></div>
-<?php if (function_exists('custom_breadcrumbs')) {
-    custom_breadcrumbs();
-} ?>
-<!-- #breadCrumb -->
 <div id="main">
     <div class="inner">
         <h2 class="mainTitle acumin">Specialist Doctors profile</h2>
@@ -122,8 +116,4 @@
         $(this).toggleClass('changeArrs');
     });
 </script>
-<?php get_template_part('template-part/areaContact'); ?>
-<!-- #areaContact -->
-<?php get_template_part('template-part/fixedSection'); ?>
-<!-- #fixedSection -->
 <?php get_footer() ?>

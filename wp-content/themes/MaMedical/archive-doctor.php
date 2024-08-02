@@ -1,9 +1,64 @@
+<?php 
+        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+        $is_search = false; 
+        $args = array (
+            'post_type' => 'doctor',
+            'posts_per_page' => '5',
+            'paged' => $paged,
+            'meta_key' => 'doctor_no',
+            'orderby' => 'meta_value_num', 
+            'order' => 'ASC',         
+        );
+        
+        if( !empty($_GET['text'])) {
+            $is_search = true;
+            // $args['s'] =  $_GET['text'];
+            $args['meta_query'] = array(
+                'relation' => 'OR',
+                array(
+                    'key' => 'doctor_no',
+                    'value' =>(int) $_GET['text'],
+                    'compare' => '=',
+                    'type' => 'NUMERIC'
+                ),
+                array(
+                    'key' => 'affiliated_medical_institution_position',
+                    'value' => $_GET['text'],
+                    'compare' => 'LIKE'
+                ),
+                array(
+                    'key' => 'location',
+                    'value' => $_GET['text'],
+                    'compare' => 'LIKE'
+                ),
+                array(
+                    'key' => 'qualifications_awards',
+                    'value' => $_GET['text'],
+                    'compare' => 'LIKE'
+                ),
+                array(
+                    'key' => 'years_of_experience',
+                    'value' =>(int) $_GET['text'],
+                    'compare' => '=',
+                    'type' => 'NUMERIC'
+                ),
+            );
+        };
+           
+        if( !empty($_GET['specialty']) && $_GET['specialty'] != 'all'){
+            $args['tax_query'] =array( array(
+                'taxonomy' => 'specialized-field',
+                'field' => 'term_id',
+                'terms' => $_GET['specialty'],
+            ));
+            $is_search = true;
+        }
+        $listDoctors = new WP_Query($args);
+        var_dump($args);
+        ?>
+
 <?php get_header() ?>
-<div id="fixH"></div>
-<?php if (function_exists('custom_breadcrumbs')) {
-    custom_breadcrumbs();
-} ?>
-<!-- #breadCrumb -->
+
 <div id="main">
     <div class="inner">
         <h2 class="pageTitle">医師一覧</h2>
@@ -25,23 +80,11 @@
             </div>
         </div>
         <!-- .doctorIntro -->
-         
+
         <?php get_template_part('template-part/form-search-box'); ?> 
         <!-- form search -->
 
-        <?php 
-        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-        $args = array (
-            'post_type' => 'doctor',
-            'posts_per_page' => '5',
-            'paged' => $paged,
-            'meta_key' => 'doctor_no',
-            'orderby' => 'meta_value_num', 
-            'order' => 'ASC'
-        );
-        $listDoctors = new WP_Query($args);
-        ?>
-
+       
         <?php if($listDoctors->have_posts()): ?>
         <div class="formResult">
             <div class="inner">
@@ -55,14 +98,22 @@
                 <?php get_template_part('template-part/boxBook'); ?>
             </div>
         </div>
+        <?php else: ?>
+        <div class="formResult">
+            <div class="inner">
+                <div class="listResult">
+                <div class="boxBook">
+                    <h3 class="titleBook">NOT FOUND DOCTOR</h3>
+                </div>
+                </div>
+                <?php get_template_part('template-part/boxBook'); ?>
+            </div>
+        </div>
         <?php endif; ?>
         <!-- .formResult -->
     </div>
     <!-- .areaListDoctor -->
 </div>
 <!-- #content -->
-<?php get_template_part('template-part/areaContact'); ?>
-<!-- #areaContact -->
-<?php get_template_part('template-part/fixedSection'); ?>
-<!-- #fixedSection -->
+
 <?php get_footer() ?>
