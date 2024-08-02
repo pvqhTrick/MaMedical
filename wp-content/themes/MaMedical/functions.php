@@ -86,35 +86,6 @@ function mytheme_wp_title( $title, $sep ) {
 }
 add_filter( 'wp_title', 'mytheme_wp_title', 10, 2 );
 
-if ( ! function_exists( 'mytheme_paging_nav' ) ) :
-/**
- * Display navigation to next/previous set of posts when applicable.
- */
-function mytheme_paging_nav() {
-	global $wp_query;
-
-	// Don't print empty markup if there's only one page.
-	if ( $wp_query->max_num_pages < 2 )
-		return;
-	?>
-	<nav class="navigation paging-navigation" role="navigation">
-		<h1 class="screen-reader-text"><?php _e( 'Posts navigation', 'mytheme' ); ?></h1>
-		<div class="nav-links">
-
-			<?php if ( get_next_posts_link() ) : ?>
-			<div class="nav-previous"><?php next_posts_link( __( '<span class="meta-nav">&larr;</span> Older posts', 'mytheme' ) ); ?></div>
-			<?php endif; ?>
-
-			<?php if ( get_previous_posts_link() ) : ?>
-			<div class="nav-next"><?php previous_posts_link( __( 'Newer posts <span class="meta-nav">&rarr;</span>', 'mytheme' ) ); ?></div>
-			<?php endif; ?>
-
-		</div><!-- .nav-links -->
-	</nav><!-- .navigation -->
-	<?php
-}
-endif;
-
 
 // SHOW CATEGORY
 function show_category( $category = 'null' ){
@@ -130,33 +101,6 @@ if ($categories): ?>
 }
 
 /// FUNCTION
-// HEADER MENU NAVIGATION 
-function MaMedical_header_menu_nav(){
-	$menu_name = 'headerMenu'; 
-	$locations = get_nav_menu_locations(); 
-
-	if (isset($locations[$menu_name])):
-		$menu_id = $locations[$menu_name]; 
-		$menu_items = wp_get_nav_menu_items($menu_id);
-		if ($menu_items):
-			foreach ($menu_items as $item):
-				if(has_sub_field($menu_name, $menu_id)): ?>
-				<li class="menu-item-has-children">
-					<a href=<?php echo esc_url($item->url)?>><?php echo esc_html($item->title) ?></a>
-					<ul class="sub-menu">
-						<li><a href="#">オンライン<br>セカンドオピニオン<br>とは</a></li>
-						<li><a href="#">医師へのメール相談<br>とは</a></li>
-						<li><a href="#">ご利用の流れ</a></li>
-                    </ul>
-				</li>
-
-				<?php else: ?>
-					<li><a href=<?php echo esc_url($item->url)?>><?php echo esc_html($item->title) ?></a></li>
-				<?php endif; ?>
-			<?php endforeach;
-		endif; 
-	endif;  
-}
 // GET DEFAULT IMAGE
 function the_default_thumbnail($gender = true){
 	if(!$gender)
@@ -266,6 +210,55 @@ function custom_breadcrumbs() {
     }
 }
 
+// Add custom rewrite rules
+function doctor_custom_rewrite_rule() {
+    add_rewrite_rule(
+        '^doctor/([0-9]+)/?$',
+        'index.php?&doctor_no=$matches[1]',
+        'top'
+    );
+}
+add_action('init', 'doctor_custom_rewrite_rule');
+
+// Add custom query vars
+function add_custom_query_vars($vars) {
+    $vars[] = 'doctor_no';
+	// var_dump($vars);
+    return $vars;
+}
+add_filter('query_vars', 'add_custom_query_vars');
+
+// Modify the query to load the correct post
+function doctor_custom_query($query) {
+    if (!is_admin() && $query->is_main_query() && isset($query->query_vars['doctor_no'])) {
+        $doctor_number = $query->query_vars['doctor_no'];
+        $meta_query = array(
+            array(
+                'key' => 'doctor_no',
+                'value' => $doctor_number,
+                'compare' => '='
+            )
+        );
+		// `var_dump($meta_query);
+        $query->set('meta_query', $meta_query);
+    }
+}
+add_action('pre_get_posts', 'doctor_custom_query');
+
+// Modify the permalink structure
+function doctor_post_type_link($post_link, $post) {
+    if ($post->post_type == 'doctor') {
+        $doctor_number = get_field('doctor_no', $post->ID);
+        if ($doctor_number) {
+            return home_url('doctor/' . $doctor_number . '/');
+            // return home_url('doctor/001/');
+        }
+    }
+    return $post_link;
+}
+add_filter('post_type_link', 'doctor_post_type_link', 1, 2);
+
+
 /// ACTION
 // LOADING CSS AND JS 
 add_action('wp_enqueue_scripts', 'load_assets');
@@ -286,7 +279,7 @@ function load_assets()
 	}
 
 	wp_enqueue_style('maincommoncss', get_theme_file_uri() . '/assets/css/common.css');
-	wp_enqueue_style('mainjquerycss', get_theme_file_uri() . '/assets/css/jquery.bxslider.css');
+	// wp_enqueue_style('mainjquerycss', get_theme_file_uri() . '/assets/css/jquery.bxslider.css');
 	wp_enqueue_script('jqueryjs', get_theme_file_uri() . "/assets/js/jquery-1.11.0.min.js", array(), '1.0', array('in_footer' => false));
 	// wp_enqueue_script('jquerybxsliderjs', get_theme_file_uri() . "/assets/js/jquery.bxslider.mi	n.js", array('jqueryjs'), '1.0', array('in_footer' => false));
 	wp_enqueue_script('mainjs', get_theme_file_uri() . "/assets/js/script.js", array('jqueryjs'), '1.0', array('in_footer' => false));

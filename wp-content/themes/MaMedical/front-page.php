@@ -1,6 +1,5 @@
-<?php get_header() ?>
+<?php get_header(); ?>
 
-<div id="fixH"></div>
 <div id="main">
     <p class="mainImage">
         <img class="pc" src="<?php echo get_theme_file_uri() . ('/assets/images/index/main.jpg') ?>" alt="mainImage">
@@ -8,7 +7,6 @@
     </p>
 </div>
 <!-- #main -->
-
 <div id="content">
     <div id="areaContact">
         <div class="inner">
@@ -261,7 +259,7 @@
             </div>
         </div>
         <div class="procedureDetails">
-            <p class="photoMain"><img src="assets/images/index/procedure-photo01.jpg" alt=""></p>
+            <p class="photoMain"><img src="<?php echo get_theme_file_uri().('/assets/images/index/procedure-photo01.jpg')?>" alt=""></p>
             <div class="inner">
                 <div class="procedureFrames">
                     <div class="procedureMain">
@@ -416,7 +414,7 @@
                                     <div class="softwareLink">
                                         <p class="softwareZoom">
                                             <a href="https://explore.zoom.us/ja/products/meetings/" target="_blank"
-                                                class="hover"><img src="assets/images/index/zomm-btn.jpg" alt=""></a>
+                                                class="hover"><img src="<?php echo get_theme_file_uri() . ('/assets/images/index/zomm-btn.jpg') ?>" alt=""></a>
                                         </p>
                                         <p class="softwareInstall">
                                             <a href="https://explore.zoom.us/ja/products/meetings/" target="_blank"
@@ -446,7 +444,7 @@
         </div>
         <div class="areaProcedure">
             <p class="imageFlow photoMain">
-                <img src="assets/images/index/image-flow.jpg" alt="image-flow">
+                <img src="<img src="<?php echo get_theme_file_uri() . ('/assets/images/index/image-flow.jpg') ?>" alt="image-flow">
             </p>
             <div class="inner">
                 <div class="procedureFrames">
@@ -487,28 +485,22 @@
                             <h4 class="cardTitle">ご利用いただけるクレジットカード</h4>
                             <ul class="listCard">
                                 <li class="cardVisa">
-                                    <a href="#" class="hover"><img src="assets/images/index/card-photo01.png"
-                                            alt=""></a>
+                                    <a href="#" class="hover"><img src="<?php echo get_theme_file_uri() . ('/assets/images/index/card-photo01.png"') ?> alt=""></a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover"><img src="assets/images/index/card-photo02.png"
-                                            alt=""></a>
+                                    <a href="#" class="hover"><img src="<?php echo get_theme_file_uri() . ('/assets/images/index/card-photo02.png') ?>" alt=""></a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover"><img src="assets/images/index/card-photo03.png"
-                                            alt=""></a>
+                                    <a href="#" class="hover"><img src="<?php echo get_theme_file_uri() . ('/assets/images/index/card-photo03.png') ?>" alt=""></a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover"><img src="assets/images/index/card-photo04.png"
-                                            alt=""></a>
+                                    <a href="#" class="hover"><img src="<?php echo get_theme_file_uri() . ('/assets/images/index/card-photo04.png') ?>" alt=""></a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover"><img src="assets/images/index/card-photo05.png"
-                                            alt=""></a>
+                                    <a href="#" class="hover"><img src="<?php echo get_theme_file_uri() . ('/assets/images/index/card-photo05.png') ?>" alt=""></a>
                                 </li>
                                 <li>
-                                    <a href="#" class="hover"><img src="assets/images/index/card-photo06.png"
-                                            alt=""></a>
+                                    <a href="#" class="hover"><img src="<?php echo get_theme_file_uri() . ('/assets/images/index/card-photo06.png') ?>" alt=""></a>
                                 </li>
                             </ul>
                         </div>
@@ -525,7 +517,7 @@
                             <p class="procedureTest">
                                 ・入金確認後、7～10営業日以内に医師から相談内容に対して回答させていただきます。医師の都合で回答が遅れる場合は、その旨ご案内申し上げます。</p>
                             <p class="procedureImage">
-                                <img src="assets/images/index/image-procedure.jpg" alt="image-procedure">
+                                <img src="<?php echo get_theme_file_uri() . ('/assets/images/index/image-procedure.jpg') ?>" alt="image-procedure">
                             </p>
                         </div>
                     </div>
@@ -733,7 +725,7 @@
             </div>
         </div>
         <div class="voiceDetails">
-            <p class="photoMain"><img src="assets/images/index/voice-photo01.jpg" alt=""></p>
+            <p class="photoMain"><img src="<?php echo get_theme_file_uri() . ('/assets/images/index/voice-photo01.jpg') ?>" alt=""></p>
             <div class="inner">
                 <div class="voiceBox">
                     <h3 class="voiceTitle">Tさん　<br class="sp">男性/７０代前半<span>「医師への相談サービス」利用</span></h3>
@@ -749,9 +741,5 @@
     <!-- areaVoice -->
 </div>
 <!-- #content -->
-<?php get_template_part('template-part/areaContact'); ?>
-<!-- #areaContact -->
-<?php get_template_part('template-part/fixedSection'); ?>
-<!-- #fixedSection -->
 
 <?php get_footer() ?>
