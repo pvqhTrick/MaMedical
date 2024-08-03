@@ -89,15 +89,24 @@ add_filter( 'wp_title', 'mytheme_wp_title', 10, 2 );
 
 // SHOW CATEGORY
 function show_category( $category = 'null' ){
-$categories = wp_get_post_terms(get_the_ID(), $category);
-if ($categories): ?>
-    <ul class="rFList">
-        <?php foreach ($categories as $item): ?>
-            <li><?php echo $item->name ?></li>
-        <?php endforeach; ?>
-    </ul>
-
-<?php endif; 
+	$categories = get_terms('specialized-field');
+	foreach($categories as $item): ?>
+		<option value="<?php echo $item->term_id ?>" <?php echo isset($_GET['specialty']) ? ($item->term_id == $_GET['specialty']) ? 'selected' : '' : ''?>><?php echo $item->name ?></option>
+	<?php endforeach;
+}
+// FIND CATEGORY
+function find_category($cat_id = 'null', $category = 'specialized-field' ){
+	if ($cat_id === null || $category === 'null') {
+		return;
+	}
+	if($cat_id===0){
+		echo 'all';
+		return;
+	}
+	$category = get_term($cat_id, $category);
+	if($cat_id == $category->term_id){
+		echo $category->name;
+	}
 }
 
 /// FUNCTION
@@ -110,7 +119,7 @@ function the_default_thumbnail($gender = true){
 }
 
 // THEME PAGINATION FUNCTION
-function theme_pagination($post_query = null)
+function theme_pagination($post_query = null)	
 {
 	global $paged, $wp_query;
 
@@ -203,7 +212,7 @@ function custom_breadcrumbs() {
     }
 }
 
-// // Add custom rewrite rules
+// Add custom rewrite rules
 // function doctor_custom_rewrite_rule() {
 //     add_rewrite_rule(
 //         '^doctor/([0-9]+)/?$',
@@ -221,7 +230,7 @@ function custom_breadcrumbs() {
 // }
 // add_filter('query_vars', 'add_custom_query_vars');
 
-// Modify the query to load the correct post
+// // Modify the query to load the correct post
 // function doctor_custom_query($query) {
 //     if (!is_admin() && $query->is_main_query() && isset($query->query_vars['doctor_no'])) {
 //         $doctor_number = $query->query_vars['doctor_no'];
@@ -232,7 +241,6 @@ function custom_breadcrumbs() {
 //                 'compare' => '='
 //             )
 //         );
-// 		// `var_dump($meta_query);
 //         $query->set('meta_query', $meta_query);
 //     }
 // }
@@ -250,6 +258,8 @@ function custom_breadcrumbs() {
 // }
 // add_filter('post_type_link', 'doctor_post_type_link', 1, 2);
 
+// FUNCTION SELECT 3 DOCTOR IN CONTACT FORM 
+add_filter('wpcf7_form_tag', 'populate_doctor_select_field');
 function populate_doctor_select_field($form_tag) {
     if ($form_tag['name'] != 'your-doctor') {
         return $form_tag;
@@ -274,7 +284,7 @@ function populate_doctor_select_field($form_tag) {
 
     return $form_tag;
 }
-add_filter('wpcf7_form_tag', 'populate_doctor_select_field');
+
 
 
 /// ACTION
@@ -295,7 +305,13 @@ function load_assets()
 	
 	} elseif (is_page('faq')) {
 		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/faq.css');
-	}  else{
+	} elseif (is_page('company')) {
+		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/company.css');
+	} elseif (is_page('contact')) {
+		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/contact.css');
+	} elseif (is_page('privacy')) {
+		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/privacy.css');
+	} else{
 		wp_enqueue_style('index-style', get_template_directory_uri() . '/assets/css/index.css');
 	}
 
@@ -305,6 +321,5 @@ function load_assets()
 	// wp_enqueue_script('jquerybxsliderjs', get_theme_file_uri() . "/assets/js/jquery.bxslider.mi	n.js", array('jqueryjs'), '1.0', array('in_footer' => false));
 	wp_enqueue_script('mainjs', get_theme_file_uri() . "/assets/js/script.js", array('jqueryjs'), '1.0', array('in_footer' => false));
 }
-
 
 /// FILTER

@@ -1,61 +1,62 @@
 <?php 
-        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-        $is_search = false; 
-        $args = array (
-            'post_type' => 'doctor',
-            'posts_per_page' => '5',
-            'paged' => $paged,
-            'meta_key' => 'doctor_no',
-            'orderby' => 'meta_value_num', 
-            'order' => 'ASC',         
+    $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+    $is_search = false; 
+    $args = array (
+        'post_type' => 'doctor',
+        'posts_per_page' => '5',
+        'paged' => $paged,
+        'meta_key' => 'doctor_no',
+        'orderby' => 'meta_value_num', 
+        'order' => 'ASC',         
+    );
+    
+    if( !empty($_GET['text'])) {
+        $is_search = true;
+        // $args['s'] =  $_GET['text'];
+        $args['meta_query'] = array(
+            'relation' => 'OR',
+            array(
+                'key' => 'doctor_no',
+                'value' =>(int) $_GET['text'],
+                'compare' => '=',
+                'type' => 'NUMERIC'
+            ),
+            array(
+                'key' => 'affiliated_medical_institution_position',
+                'value' => $_GET['text'],
+                'compare' => 'LIKE'
+            ),
+            array(
+                'key' => 'location',
+                'value' => $_GET['text'],
+                'compare' => 'LIKE'
+            ),
+            array(
+                'key' => 'qualifications_awards',
+                'value' => $_GET['text'],
+                'compare' => 'LIKE'
+            ),
+            array(
+                'key' => 'years_of_experience',
+                'value' =>(int) $_GET['text'],
+                'compare' => '=',
+                'type' => 'NUMERIC'
+            ),
         );
+    };
         
-        if( !empty($_GET['text'])) {
-            $is_search = true;
-            // $args['s'] =  $_GET['text'];
-            $args['meta_query'] = array(
-                'relation' => 'OR',
-                array(
-                    'key' => 'doctor_no',
-                    'value' =>(int) $_GET['text'],
-                    'compare' => '=',
-                    'type' => 'NUMERIC'
-                ),
-                array(
-                    'key' => 'affiliated_medical_institution_position',
-                    'value' => $_GET['text'],
-                    'compare' => 'LIKE'
-                ),
-                array(
-                    'key' => 'location',
-                    'value' => $_GET['text'],
-                    'compare' => 'LIKE'
-                ),
-                array(
-                    'key' => 'qualifications_awards',
-                    'value' => $_GET['text'],
-                    'compare' => 'LIKE'
-                ),
-                array(
-                    'key' => 'years_of_experience',
-                    'value' =>(int) $_GET['text'],
-                    'compare' => '=',
-                    'type' => 'NUMERIC'
-                ),
-            );
-        };
-           
-        if( !empty($_GET['specialty']) && $_GET['specialty'] != 'all'){
-            $args['tax_query'] =array( array(
-                'taxonomy' => 'specialized-field',
-                'field' => 'term_id',
-                'terms' => $_GET['specialty'],
-            ));
-            $is_search = true;
-        }
-        $listDoctors = new WP_Query($args);
-        var_dump($args);
-        ?>
+    if( !empty($_GET['specialty']) && $_GET['specialty'] != 'all'){
+        $args['tax_query'] =array( array(
+            'taxonomy' => 'specialized-field',
+            'field' => 'term_id',
+            'terms' => $_GET['specialty'],
+        ));
+        $is_search = true;
+    }
+    $listDoctors = new WP_Query($args);
+    set_query_var('listDoctors', $listDoctors->posts);
+    // var_dump($args);
+?>
 
 <?php get_header() ?>
 
@@ -80,12 +81,8 @@
             </div>
         </div>
         <!-- .doctorIntro -->
-
-        <?php get_template_part('template-part/form-search-box'); ?> 
+        <?php $is_search?empty($listDoctors)?get_template_part('template-part/form-search-box', 'noresult'):get_template_part('template-part/form-search-box', 'result', array('listDoctor'=> $listDoctors)):get_template_part('template-part/form-search-box'); ?>
         <!-- form search -->
-
-       
-        <?php if($listDoctors->have_posts()): ?>
         <div class="formResult">
             <div class="inner">
                 <div class="listResult">
@@ -98,18 +95,6 @@
                 <?php get_template_part('template-part/boxBook'); ?>
             </div>
         </div>
-        <?php else: ?>
-        <div class="formResult">
-            <div class="inner">
-                <div class="listResult">
-                <div class="boxBook">
-                    <h3 class="titleBook">NOT FOUND DOCTOR</h3>
-                </div>
-                </div>
-                <?php get_template_part('template-part/boxBook'); ?>
-            </div>
-        </div>
-        <?php endif; ?>
         <!-- .formResult -->
     </div>
     <!-- .areaListDoctor -->
