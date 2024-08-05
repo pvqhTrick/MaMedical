@@ -9,7 +9,7 @@
                         <div class="formInput">
                             <select name="specialty" class="formInputSelect">
                                 <option value='0'>専門分野</option>
-                                 <?php show_category(); ?>
+                                <?php show_category(); ?>
                             </select>
                         </div>
                     </div>

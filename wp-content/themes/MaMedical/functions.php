@@ -96,10 +96,10 @@ function show_category( $category = 'null' ){
 }
 // FIND CATEGORY
 function find_category($cat_id = 'null', $category = 'specialized-field' ){
-	if ($cat_id === null || $category === 'null') {
+	if ($cat_id === 'null' || $category === 'null') {
 		return;
 	}
-	if($cat_id===0){
+	if($cat_id==0){
 		echo 'all';
 		return;
 	}
@@ -187,7 +187,7 @@ function custom_breadcrumbs() {
     // Get the query & post information
     global $post,$wp_query;
     
-    if ( !is_front_page() ) {
+    if ( !is_front_page() && !is_home()) {
 		echo '<div id="breadCrumb">';
        	echo '<div class="inner">';
         echo '<ul class="listBread">';
@@ -195,16 +195,20 @@ function custom_breadcrumbs() {
         echo '<li><a href="' . HOME_URL . '">TOP</a></li>';
         
 		if ( is_post_type_archive('doctor')) {
-            echo '<li><a href=#>医師一覧</a></li>';
+            echo '<li><a href='.home_url('/doctor/').'>医師一覧</a></li>';
         }
 
         if ( is_single() ) {
-			echo '<li><a href=#> 医師一覧 </a></li>';
-            echo '<li><span>' . get_the_title() . '</span></li>';
+			echo '<li><span> 医師一覧 </span></li>';
         } 
 		if ( is_page('faq') ) {
+			echo '<li><span> よくある質問 </span></li>';
+        } 
+		if ( is_page('privacy') ) {
 			echo '<li><a href=#> よくある質問 </a></li>';
-            echo '<li><span>' . get_the_title() . '</span></li>';
+        } 
+		if ( is_page('contact') ) {
+			echo '<li><a href=#> 医師への相談・面談予約・その他お問合せはこちら </a></li>';
         } 
         echo '</ul>';
 		echo '</div>';
@@ -214,51 +218,54 @@ function custom_breadcrumbs() {
 
 // Add custom rewrite rules
 // function doctor_custom_rewrite_rule() {
-//     add_rewrite_rule(
-//         '^doctor/([0-9]+)/?$',
-//         'single-doctor.php?post-type=doctor&doctor_no=$matches[1]',
-//         'top'
-//     );	
+//     // add_rewrite_rule(
+//     //     '^doctor/([0-9]+)/?$',
+//     //     'front-page.php?post-type=doctor&doctor_no=$matches[1]',
+//     //     'top'
+//     // );	
 // }
 // add_action('init', 'doctor_custom_rewrite_rule');
 
-// // Add custom query vars
-// function add_custom_query_vars($vars) {
-//     $vars[] = 'doctor_no';
-// 	// var_dump($vars);
-//     return $vars;
-// }
+// Add custom query vars
+function add_custom_query_vars($vars) {
+    // $vars[] = 'doctor_no';
+	// var_dump($vars);
+    return $vars;
+}
 // add_filter('query_vars', 'add_custom_query_vars');
 
-// // Modify the query to load the correct post
-// function doctor_custom_query($query) {
-//     if (!is_admin() && $query->is_main_query() && isset($query->query_vars['doctor_no'])) {
-//         $doctor_number = $query->query_vars['doctor_no'];
-//         $meta_query = array(
-//             array(
-//                 'key' => 'doctor_no',
-//                 'value' => $doctor_number,
-//                 'compare' => '='
-//             )
-//         );
-//         $query->set('meta_query', $meta_query);
-//     }
-// }
+// Modify the query to load the correct post
+function doctor_custom_query($query) {
+    // if (!is_admin() && $query->is_main_query() && isset($query->query_vars['doctor_no'])) {
+    //     $doctor_number = $query->query_vars['doctor_no'];
+    //     $meta_query = array(
+    //         array(
+    //             'key' => 'doctor_no',
+    //             'value' => $doctor_number,
+    //             'compare' => '='
+    //         )
+    //     );
+    //     $query->set('meta_query', $meta_query);
+    // }
+}
 // add_action('pre_get_posts', 'doctor_custom_query');
 
-// // Modify the permalink structure
-// function doctor_post_type_link($post_link, $post) {
-//     if ($post->post_type == 'doctor') {
-//         $doctor_number = get_field('doctor_no', $post->ID);
-//         if ($doctor_number) {
-//             return home_url('doctor/' . $doctor_number . '/');
-//         }
-//     }
-//     return $post_link;
-// }
+// Modify the permalink structure
+function doctor_post_type_link($post_link, $post) {
+    // if ($post->post_type == 'doctor') {
+    //     $doctor_number = get_field('doctor_no', $post->ID);
+    //     if ($doctor_number) {
+    //         return home_url('doctor/' . $doctor_number . '/');
+    //     }
+    // }
+    // return $post_link;
+}
 // add_filter('post_type_link', 'doctor_post_type_link', 1, 2);
+add_action('init', function() {
+    flush_rewrite_rules();
+});
 
-// FUNCTION SELECT 3 DOCTOR IN CONTACT FORM 
+// FUNCTION SELECT ALL DOCTOR IN CONTACT FORM 
 add_filter('wpcf7_form_tag', 'populate_doctor_select_field');
 function populate_doctor_select_field($form_tag) {
     if ($form_tag['name'] != 'your-doctor') {
@@ -266,7 +273,7 @@ function populate_doctor_select_field($form_tag) {
     }
     $args = array(
         'post_type' => 'doctor',
-        'posts_per_page' => 3,
+        'posts_per_page' => -1,
         'orderby' => 'date',
         'order' => 'DESC'
     );
@@ -285,8 +292,21 @@ function populate_doctor_select_field($form_tag) {
     return $form_tag;
 }
 
-
-
+//
+function result_search(){?>
+	<ul class="areaSpecialized">
+                <li>
+                    <span class="label">専門分野:　</span>
+                    <br class="sp">
+                    <span class="value"><?php find_category($_GET['specialty']) ?></span>
+                </li>
+                <li>
+                    <span class="label">対応可能な疾患:　</span>
+                    <br class="sp">
+                    <span class="value"><?php echo $_GET['text'] ?></span>
+                </li>
+            </ul>
+<?php }
 /// ACTION
 // LOADING CSS AND JS 
 add_action('wp_enqueue_scripts', 'load_assets');
@@ -309,11 +329,20 @@ function load_assets()
 		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/company.css');
 	} elseif (is_page('contact')) {
 		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/contact.css');
+		
 	} elseif (is_page('privacy')) {
 		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/privacy.css');
 	} else{
 		wp_enqueue_style('index-style', get_template_directory_uri() . '/assets/css/index.css');
 	}
+	wp_register_script('jquery-ui', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js', array('jquery'), '1.12.1', true);
+	wp_enqueue_script('jquery-ui');
+
+	wp_register_script('datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js', array('jquery'), '1.0.10', true);
+	wp_enqueue_script('datepicker');
+
+	wp_register_script('datepicker-ja', 'https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/i18n/datepicker.ja-JP.min.js', array('datepicker'), '1.0.10', true);
+	wp_enqueue_script('datepicker-ja');
 
 	wp_enqueue_style('maincommoncss', get_theme_file_uri() . '/assets/css/common.css');
 	// wp_enqueue_style('mainjquerycss', get_theme_file_uri() . '/assets/css/jquery.bxslider.css');

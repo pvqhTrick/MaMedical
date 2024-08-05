@@ -21,27 +21,27 @@
                 'compare' => '=',
                 'type' => 'NUMERIC'
             ),
-            array(
-                'key' => 'affiliated_medical_institution_position',
-                'value' => $_GET['text'],
-                'compare' => 'LIKE'
-            ),
-            array(
-                'key' => 'location',
-                'value' => $_GET['text'],
-                'compare' => 'LIKE'
-            ),
-            array(
-                'key' => 'qualifications_awards',
-                'value' => $_GET['text'],
-                'compare' => 'LIKE'
-            ),
-            array(
-                'key' => 'years_of_experience',
-                'value' =>(int) $_GET['text'],
-                'compare' => '=',
-                'type' => 'NUMERIC'
-            ),
+            // array(
+            //     'key' => 'affiliated_medical_institution_position',
+            //     'value' => $_GET['text'],
+            //     'compare' => 'LIKE'
+            // ),
+            // array(
+            //     'key' => 'location',
+            //     'value' => $_GET['text'],
+            //     'compare' => 'LIKE'
+            // ),
+            // array(
+            //     'key' => 'qualifications_awards',
+            //     'value' => $_GET['text'],
+            //     'compare' => 'LIKE'
+            // ),
+            // array(
+            //     'key' => 'years_of_experience',
+            //     'value' =>(int) $_GET['text'],
+            //     'compare' => '=',
+            //     'type' => 'NUMERIC'
+            // ),
         );
     };
         
@@ -53,12 +53,13 @@
         ));
         $is_search = true;
     }
+
     $listDoctors = new WP_Query($args);
     set_query_var('listDoctors', $listDoctors->posts);
     // var_dump($args);
 ?>
 
-<?php get_header() ?>
+<?php get_header(); ?>
 
 <div id="main">
     <div class="inner">
@@ -81,7 +82,7 @@
             </div>
         </div>
         <!-- .doctorIntro -->
-        <?php $is_search?empty($listDoctors)?get_template_part('template-part/form-search-box', 'noresult'):get_template_part('template-part/form-search-box', 'result', array('listDoctor'=> $listDoctors)):get_template_part('template-part/form-search-box'); ?>
+        <?php $is_search?empty($listDoctors->posts)?get_template_part('template-part/form-search-box', 'noresult'):get_template_part('template-part/form-search-box', 'result', array('listDoctor'=> $listDoctors)):get_template_part('template-part/form-search-box'); ?>
         <!-- form search -->
         <div class="formResult">
             <div class="inner">

@@ -729,3 +729,7 @@ div.wpcf7 .ajax-loader {
         margin-top: 5px;
     }
 }
+
+#submitBtn {
+    opacity: 0.5;
+}
