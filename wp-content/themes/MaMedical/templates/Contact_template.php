@@ -40,18 +40,6 @@ Template Name: Contact Template
                 <!-- .contactThank -->
             </div>
         </div>
-        <script>
-            const termsCheckbox = document.getElementById('termsCheckbox');
-            const submitBtn = document.getElementById('submitBtn');
-
-            termsCheckbox.addEventListener('change', function() {
-                if (this.checked) {
-                    submitBtn.style.display = 'block';
-                } else {
-                    submitBtn.style.display = 'none';
-                }
-            });
-        </script>
     </div>
 </div>
 <!-- #content -->

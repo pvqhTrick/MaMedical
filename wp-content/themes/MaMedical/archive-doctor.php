@@ -10,15 +10,14 @@
         'order' => 'ASC',         
     );
     
-    if( !empty($_GET['text'])) {
+    if(!empty($_GET['text'])) {
         $is_search = true;
         // $args['s'] =  $_GET['text'];
         $args['meta_query'] = array(
             'relation' => 'OR',
             array(
                 'key' => 'doctor_no',
-                'value' =>(int) $_GET['text'],
-                'compare' => '=',
+                'value' =>intval($_GET['text']) ,
                 'type' => 'NUMERIC'
             ),
             // array(
@@ -55,11 +54,9 @@
     }
 
     $listDoctors = new WP_Query($args);
-    set_query_var('listDoctors', $listDoctors->posts);
-    // var_dump($args);
 ?>
 
-<?php get_header(); ?>
+<?php get_header(); var_dump($args)?>
 
 <div id="main">
     <div class="inner">
@@ -82,7 +79,15 @@
             </div>
         </div>
         <!-- .doctorIntro -->
-        <?php $is_search?empty($listDoctors->posts)?get_template_part('template-part/form-search-box', 'noresult'):get_template_part('template-part/form-search-box', 'result', array('listDoctor'=> $listDoctors)):get_template_part('template-part/form-search-box'); ?>
+        <?php $index =123;
+        // get_template_part('template-part/demo',null, array('index'=>$index));
+        if($is_search)
+            if($listDoctors->have_posts())
+                get_template_part('template-part/form-search-box', 'noresult',array('cat_id'=> 1));
+            else 
+                get_template_part('template-part/form-search-box', 'result', array('number'=> $listDoctors->found_posts));
+        else 
+            get_template_part('template-part/form-search-box'); ?>
         <!-- form search -->
         <div class="formResult">
             <div class="inner">

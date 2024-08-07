@@ -21,7 +21,7 @@
                     <div class="detailInfor">
                         <div class="itemInfor">
                             <h4 class="titleInfor">所属医療機関・役職</h4>
-                            <p class="subInfor sub21"><?php echo get_field('_affiliated_medical_institutionposition') ?></p>
+                            <p class="subInfor sub21"><?php echo get_field('affiliated_medical_institution_position') ?></p>
                         </div>
                         <div class="itemInfor">
                             <h4 class="titleInfor">所在地</h4>
@@ -70,8 +70,6 @@
                     <h4 class="titleContent">資格・受賞歴</h4>
                     <?php get_template_part('template-part/category'); ?>
                 </div>
-
-                
                 <div class="itemContent">
                     <h4 class="titleContent">所属学会</h4>
                     <?php 
@@ -81,8 +79,7 @@
                         echo '行が見つかりません';
                     endif; ?>
                 </div>
-
-                <?php $affiliated_academic_society = get_field('affiliated_academic_society'); ?>
+                <?php $affiliated_academic_society = get_field('affiliated_academic_society_table'); ?>
                 <?php if ($affiliated_academic_society): ?>
                     <div class="itemContent">
                         <h4 class="titleContent">所属学会</h4>
@@ -91,7 +88,7 @@
                                 <?php foreach($affiliated_academic_society as $item):?>
                                 <tr>
                                     <th><?php echo $item['time_line']?></th>
-                                    <td><?php  echo $item['affiliated_academic_society']?></td>
+                                    <td><?php  echo $item['affiliated_academic_society_name']?></td>
                                 </tr>
                                 <?php  endforeach; ?>
                             </table>
@@ -99,11 +96,12 @@
                     </div>
                 <?php else:
                     echo '行が見つかりません';
-                endif; ?>
-                            
+                endif; ?>          
                 <div class="itemContent">
                     <h4 class="titleContent">経験年数</h4>
-                    <p class="subContent"><?php echo get_field('years_of_experience') ?>年</p>
+                    <?php if(get_field('years_of_experience')): ?>
+                        <p class="subContent"><?php echo get_field('years_of_experience') ?>年</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

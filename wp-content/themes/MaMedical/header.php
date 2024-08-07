@@ -22,7 +22,7 @@
     <div class="headerBar">
         <div class="inner">
             <div class="logo">
-                <a class="hover" href="index.html"><img src="<?php echo get_theme_file_uri() . ('/assets/images/common/logo.svg') ?>" alt=""></a>
+                <a class="hover" href="<?php echo home_url() ?>"><img src="<?php echo get_theme_file_uri() . ('/assets/images/common/logo.svg') ?>" alt=""></a>
             </div>
             <ul class="listLang">
                 <li><a href="#" class="hover">日本語</a></li>
@@ -38,10 +38,6 @@
     </div>
     <div class="mainMenu">
         <div class="inner">
-            <!-- <ul class="menu">
-                <li class="current-menu-item"><a href="<?php echo home_url() ?>">TOP</a></li>
-            
-            </ul> -->
             <?php wp_nav_menu(['theme_location'=>'headerMenu', 'container'=>'']); ?>
         </div>
     </div>
