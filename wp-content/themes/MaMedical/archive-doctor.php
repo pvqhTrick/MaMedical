@@ -9,10 +9,8 @@
         'orderby' => 'meta_value_num', 
         'order' => 'ASC',         
     );
-    
     if(!empty($_GET['text'])) {
         $is_search = true;
-        // $args['s'] =  $_GET['text'];
         $args['meta_query'] = array(
             'relation' => 'OR',
             array(
@@ -43,8 +41,7 @@
             // ),
         );
     };
-        
-    if( !empty($_GET['specialty']) && $_GET['specialty'] != 'all'){
+    if( !empty($_GET['specialty']) && $_GET['specialty'] != '0'){
         $args['tax_query'] =array( array(
             'taxonomy' => 'specialized-field',
             'field' => 'term_id',
@@ -52,11 +49,10 @@
         ));
         $is_search = true;
     }
-
     $listDoctors = new WP_Query($args);
 ?>
 
-<?php get_header(); var_dump($args)?>
+<?php get_header();?>
 
 <div id="main">
     <div class="inner">
@@ -79,23 +75,22 @@
             </div>
         </div>
         <!-- .doctorIntro -->
-        <?php $index =123;
-        // get_template_part('template-part/demo',null, array('index'=>$index));
+        <?php
         if($is_search)
             if($listDoctors->have_posts())
-                get_template_part('template-part/form-search-box', 'noresult',array('cat_id'=> 1));
-            else 
                 get_template_part('template-part/form-search-box', 'result', array('number'=> $listDoctors->found_posts));
+            else 
+                get_template_part('template-part/form-search-box', 'noresult');
         else 
-            get_template_part('template-part/form-search-box'); ?>
+            get_template_part('template-part/form-search-box');
+        ?>
         <!-- form search -->
         <div class="formResult">
             <div class="inner">
                 <div class="listResult">
                     <?php while($listDoctors->have_posts()): $listDoctors->the_post(); ?>
-                        <?php get_template_part('template-part/doctor-item'); ?>
+                        <?php get_template_part('template-part/doctor-item');?>
                     <?php endwhile; wp_reset_postdata(); ?>
-
                     <?php echo theme_pagination($listDoctors); ?>
                 </div>
                 <?php get_template_part('template-part/boxBook'); ?>

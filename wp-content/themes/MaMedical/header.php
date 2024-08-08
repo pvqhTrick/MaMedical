@@ -11,13 +11,11 @@
     <meta name="author" content=" content " />
     <meta name="robots" content=" all " />
     <meta name="googlebot" content=" all ">
-	
-	<?php wp_head(); ?>
-     
+	<?php wp_head(); ?>   
 </head>
 
-<body <?php body_class() ?>> 
-
+<body> 
+<header>
 <div id="header">
     <div class="headerBar">
         <div class="inner">
@@ -42,6 +40,7 @@
         </div>
     </div>
 </div>
+</header>
 <!-- #header -->
 <div id="fixH"></div>
 <?php if (function_exists('custom_breadcrumbs') && !is_home()) {

@@ -5,6 +5,7 @@
     </div>
 </div>
 <!-- #main -->
+<?php while(have_posts()): the_post(); ?>
 <div id="content">
     <div class="areaDetail">
         <div class="inner">
@@ -75,13 +76,11 @@
                     <?php 
                     if (get_field('affiliated_academic_society_text')): ?>
                         <p class="subContent"><?php echo nl2br(get_field('affiliated_academic_society_text')); ?></p>
-                    <?php else:
-                        echo '行が見つかりません';
-                    endif; ?>
+                    <?php endif; ?>
                 </div>
                 <?php $affiliated_academic_society = get_field('affiliated_academic_society_table'); ?>
                 <?php if ($affiliated_academic_society): ?>
-                    <div class="itemContent">
+                    <div class="itemContent">s
                         <h4 class="titleContent">所属学会</h4>
                         <div class="tableContent">
                             <table>
@@ -100,13 +99,14 @@
                 <div class="itemContent">
                     <h4 class="titleContent">経験年数</h4>
                     <?php if(get_field('years_of_experience')): ?>
-                        <p class="subContent"><?php echo get_field('years_of_experience') ?>年</p>
+                        <p class="subContent"><?php the_field('years_of_experience') ?>年</p>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<?php endwhile; ?>
 <!-- #content -->
 <script type="text/javascript">
     $('.question').click(function () {

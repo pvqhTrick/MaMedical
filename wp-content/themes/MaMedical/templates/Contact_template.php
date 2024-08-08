@@ -29,13 +29,13 @@ Template Name: Contact Template
             <div class="inner">
                 <h2 class="contactTitle"><span>医師への相談・面談予約・<br class="sp">その他お問合せフォーム</span></h2>
                 <div class="form">
-                    <?php the_content() ?>
+                    <?php echo do_shortcode('[contact-form-7 id="6043d9c" title="Contact form 1"]')?>
                 </div>
                 <!-- .form -->
                 <div class="contactThank">
-                    <p class="contactText">ありがとうございます。 メールを送信いたしました。<br><br>通常、お問い合わせ後5営業日以内に <br
-                            class="sp">ご返答・ご対応させていただいております。<br> 1週間以上お返事が届かない場合は、<br
-                            class="sp">連絡先を誤って入力された可能性がございます。<br>その際は大変お手数ですが、再度ご連絡くださいますようお願い申し上げます。</p>
+                    <p class="contactText">ありがとうございます。 メールを送信いたしました。<br><br>通常、お問い合わせ後5営業日以内に 
+                    <br class="sp">ご返答・ご対応させていただいております。<br> 1週間以上お返事が届かない場合は、
+                    <br class="sp">連絡先を誤って入力された可能性がございます。<br>その際は大変お手数ですが、再度ご連絡くださいますようお願い申し上げます。</p>
                 </div>
                 <!-- .contactThank -->
             </div>

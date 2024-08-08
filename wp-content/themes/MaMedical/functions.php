@@ -338,7 +338,8 @@ function load_assets()
 	wp_enqueue_script('jqueryjs', get_theme_file_uri() . "/assets/js/jquery-1.11.0.min.js", array(), '1.0', array('in_footer' => false));
 	// wp_enqueue_script('jquerybxsliderjs', get_theme_file_uri() . "/assets/js/jquery.bxslider.mi	n.js", array('jqueryjs'), '1.0', array('in_footer' => false));
 	wp_enqueue_script('mainjs', get_theme_file_uri() . "/assets/js/script.js", array('jqueryjs'), '1.0', array('in_footer' => false));
-
+	wp_enqueue_script('jquery-ui', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js', array('jqueryjs'), '1.12.1', true);
+	wp_enqueue_script('datepicker-ja', 'https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/i18n/datepicker.ja.min.js', array('jquery-ui'), '1.0.10', true);
 	if (is_home() || is_front_page()) {
 		wp_enqueue_style('index-style', get_template_directory_uri() . '/assets/css/index.css');
 	} elseif (is_single()) {
@@ -354,13 +355,7 @@ function load_assets()
 		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/company.css');
 	} elseif (is_page('contact')) {
 		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/contact.css');
-		wp_register_script('jquery-ui', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js', array('jquery'), '1.12.1', true);
-		wp_enqueue_script('jquery-ui');
-		wp_register_script('datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js', array('jquery'), '1.0.10', true);
-		wp_enqueue_script('datepicker');
-		wp_register_script('datepicker-ja', 'https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/i18n/datepicker.ja-JP.min.js', array('datepicker'), '1.0.10', true);
-		wp_enqueue_script('datepicker-ja');
-		wp_enqueue_script('jqueryjs-contact', get_theme_file_uri() . "/assets/js/contact.js", array(), '1.0', array('in_footer' => false));
+		wp_enqueue_script('jqueryjs-contact', get_theme_file_uri() . "/assets/js/contact.js", array('jquery-ui'));
 	} elseif (is_page('privacy')) {
 		wp_enqueue_style('list-style', get_template_directory_uri() . '/assets/css/privacy.css');
 	} else{
@@ -369,3 +364,25 @@ function load_assets()
 }
 
 /// FILTER
+
+/// SHORTCODE
+// SHORTCODE DISPLAY ALL DOCTOR AND SELECTED 3 DOCTOR
+function display_doctors_shortcode() {
+    $args = array(
+        'post_type'      => 'doctor',
+        'posts_per_page' => -1,
+    );
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) {
+        ob_start();  
+		get_template_part('template-part/inputCheckBoxDoctor', null, array('query'=> $query) );
+        return ob_get_clean();
+    }
+}
+add_shortcode('display_doctors', 'display_doctors_shortcode');
+// [checkbox your-doctor use_label_element]
+function do_shortcode_in_cf7($form) {
+    return do_shortcode($form);
+}
+add_filter('wpcf7_form_elements', 'do_shortcode_in_cf7');

@@ -1,7 +1,8 @@
 <div id="areaContact">
     <div class="inner">
-        <h3 class="contactTitle">お問合せ<small>は</small><span>お電話</span><small>または</small><br
-                class="sp"><span>フォーム</span>でお気軽に</h3>
+        <h3 class="contactTitle">お問合せ<small>は</small><span>お電話</span><small>または</small>
+        <br class="sp">
+        <span>フォーム</span>でお気軽に</h3>
         <div class="boxPhone">
             <p class="boxPhoneHead">お客様専用電話窓口</p>
             <p class="phone acumin"><a href="tel:0120934844">0120-934-844</a></p>
