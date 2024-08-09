@@ -15,7 +15,6 @@
 </head>
 
 <body> 
-<header>
 <div id="header">
     <div class="headerBar">
         <div class="inner">
@@ -40,9 +39,8 @@
         </div>
     </div>
 </div>
-</header>
 <!-- #header -->
-<div id="fixH"></div>
+<div id="fixH" style='height: 65px'></div>
 <?php if (function_exists('custom_breadcrumbs') && !is_home()) {
     custom_breadcrumbs();
 } ?>

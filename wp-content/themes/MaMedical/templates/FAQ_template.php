@@ -4,14 +4,12 @@ Template Name: FAQ Template
 */
 ?>
 <?php get_header() ?>
-
 <div id="main">
     <div class="inner">
         <h2 class="pageTitle">よくある質問</h2>
     </div>
 </div>
 <!-- #main -->
-
 <div id="content">
     <div class="areaFaq pageBG">
         <div class="inner">
@@ -20,7 +18,6 @@ Template Name: FAQ Template
         $FAQS = new WP_Query($args); 
         // var_dump($FAQS);
         if($FAQS->have_posts()): $FAQS->the_post();?> 
-        
             <?php if( have_rows('frequently_asked_questions') ): ?>
                 <h3 class="areaTitleLead">よくある質問</h3>
                 <?php while( have_rows('frequently_asked_questions') ): the_row();  ?>
@@ -36,12 +33,11 @@ Template Name: FAQ Template
                         </div>
                     </div>
                 </div>
-                <?php endwhile; ?>
-            <?php endif; ?>
-        <?php else: ?>
+                <?php endwhile; 
+            endif; 
+        else: ?>
             <h3 class="areaTitleLead">NULL</h3>
         <?php endif; ?>
-        
         </div>
     </div>
 </div>
@@ -52,6 +48,5 @@ Template Name: FAQ Template
         $(this).toggleClass('changeArrs');
     });
 </script>
-
 
 <?php get_footer() ?>

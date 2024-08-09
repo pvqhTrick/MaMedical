@@ -4,11 +4,10 @@
         <?php while ($query->have_posts()): $query->the_post();            
             $doctor_no = get_post_meta(get_the_ID(), 'doctor_no', true);
             $doctor_name = get_the_title();?>
-
             <span class="wpcf7-list-item">
                 <label>
-                    <input type="checkbox" name="your-doctor[]" value="<?php echo esc_attr('医師'.$doctor_no . '　' . $doctor_name) ?>">
-                    <span class="wpcf7-list-item-label"><?php echo ('医師'.$doctor_no . '　' . $doctor_name); ?></span>
+                    <input type="checkbox" name="your-doctor[]" value="<?php echo esc_attr('医師No.'.$doctor_no . '　' . $doctor_name) ?>">
+                    <span class="wpcf7-list-item-label"><?php echo ('医師No.'.$doctor_no . '　' . $doctor_name); ?></span>
                 </label>
             <p class="linkDetail"><a href="<?php echo get_permalink() ?>" class="hover"><?php echo $doctor_name.'のプロフィール'?></a></p>
             </span>
@@ -35,6 +34,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
+    });
+
+    const checkbox = document.getElementById('your-confirm');
+    const submitButton = document.getElementById('submit-button');
+
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            submitButton.style.display = 'block'; 
+        } else {
+            submitButton.style.display = 'none'; 
+        }
     });
 });
 </script>

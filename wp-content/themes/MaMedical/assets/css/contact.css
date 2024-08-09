@@ -730,13 +730,10 @@ div.wpcf7 .ajax-loader {
     }
 }
 
-#submitBtn {
-    opacity: 0.5;
-}
 .hidden-checkbox {
-    display: none;
+    opacity: 0.2;
+    pointer-events: none;
 }
-/* Custom styles for Contact Form 7 Datepicker */
 .ui-datepicker {
     width: 14%;
     background: #fff;
@@ -744,7 +741,6 @@ div.wpcf7 .ajax-loader {
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
 .ui-datepicker-header {
     background: #f5f5f5;
     border-bottom: 1px solid #ccc;
@@ -780,4 +776,7 @@ div.wpcf7 .ajax-loader {
 .ui-datepicker .ui-datepicker-buttonpane {
     text-align: center;
     margin-top: 10px;
+}
+#submit-button{
+    display: none;
 }

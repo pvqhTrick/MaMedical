@@ -7,11 +7,9 @@ get_header(); ?>
 
 	<div id="primary" class="content-area">
 		<div id="content" class="site-content" role="main">
-
 			<header class="page-header">
 				<h1 class="page-title"><?php _e( 'Not Found', 'mytheme' ); ?></h1>
 			</header>
-
 			<div class="page-wrapper">
 				<div class="page-content">
 					<h2><?php _e( 'This is somewhat embarrassing, isn&rsquo;t it?', 'mytheme' ); ?></h2>

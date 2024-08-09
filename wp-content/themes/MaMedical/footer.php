@@ -2,7 +2,6 @@
 <!-- #areaContact -->
 <?php get_template_part('template-part/fixedSection'); ?>
 <!-- #fixedSection -->
-<footer>
 <div id="footer">
     <div class="inner">
         <div class="ftWrapper">
@@ -25,7 +24,6 @@
 </div>
 <!-- #footer -->
     <?php wp_footer(); ?>
-</footer>
 </body>
 </html>
 

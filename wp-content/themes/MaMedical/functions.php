@@ -373,7 +373,6 @@ function display_doctors_shortcode() {
         'posts_per_page' => -1,
     );
     $query = new WP_Query($args);
-
     if ($query->have_posts()) {
         ob_start();  
 		get_template_part('template-part/inputCheckBoxDoctor', null, array('query'=> $query) );

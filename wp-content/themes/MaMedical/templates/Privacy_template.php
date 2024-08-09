@@ -3,9 +3,7 @@
 Template Name: Privacy Template
 */
 ?>
-
 <?php get_header() ?>
-
 <div id="main">
     <div class="inner">
         <h2 class="pageTitle">プライバシーポリシー</h2>
