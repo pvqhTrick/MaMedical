@@ -26,11 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 checkboxes.forEach(cb => {
                     if (!cb.checked) {
                         cb.classList.add('hidden-checkbox');
+                        // cb.style.visibility = 'hidden'; 
+                        
                     }
                 });
             } else {
                 checkboxes.forEach(cb => {
                     cb.classList.remove('hidden-checkbox');
+                    // cb.style.visibility = 'visible'; 
                 });
             }
         });
@@ -41,9 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     checkbox.addEventListener('change', function() {
         if (this.checked) {
-            submitButton.style.display = 'block'; 
+            submitButton.style.visibility = 'visible'; 
         } else {
-            submitButton.style.display = 'none'; 
+            submitButton.style.visibility = 'hidden'; 
         }
     });
 });

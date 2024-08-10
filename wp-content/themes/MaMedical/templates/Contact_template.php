@@ -29,7 +29,7 @@ Template Name: Contact Template
             <div class="inner">
                 <h2 class="contactTitle"><span>医師への相談・面談予約・<br class="sp">その他お問合せフォーム</span></h2>
                 <div class="form">
-                    <?php echo do_shortcode('[contact-form-7 id="6043d9c" title="Contact form 1"]')?>
+                    <?php echo do_shortcode('[contact-form-7 id="6043d9c" title="Contact form 1"]',true)?>
                 </div>
                 <!-- .form -->
                 <div class="contactThank">

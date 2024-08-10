@@ -213,49 +213,79 @@ function custom_breadcrumbs() {
 }
 
 // //Add custom rewrite rules
-// function doctor_custom_rewrite_rule() {
-//     add_rewrite_rule(
-//         '^doctor/([0-9]+)/?$',
-//         'front-page.php?post-type=doctor&doctor_no=$matches[1]',
-//         'top'
-//     );	
-// }
-// add_action('init', 'doctor_custom_rewrite_rule');
+function doctor_custom_rewrite_rule() {
+    add_rewrite_rule(
+        '^doctor/([0-9]+)/?',
+        'index.php?doctor_no=$matches[1]',
+        'top'
+    );	
+}
+add_action('init', 'doctor_custom_rewrite_rule');
 
-// // Add custom query vars
-// function add_custom_query_vars($vars) {
-//     $vars[] = 'doctor_no';
-//     return $vars;
-// }
-// add_filter('query_vars', 'add_custom_query_vars');
+// Add custom query vars
+function add_custom_query_vars($vars) {
+    $vars[] = 'doctor_no';
+    return $vars;
+}
+add_filter('query_vars', 'add_custom_query_vars');
 
-// // Modify the query to load the correct post
-// function doctor_custom_query($query) {
-//     if (!is_admin() && $query->is_main_query() && isset($query->query_vars['doctor_no'])) {
-//         $doctor_number = $query->query_vars['doctor_no'];
-//         $meta_query = array(
-//             array(
-//                 'key' => 'doctor_no',
-//                 'value' => $doctor_number,
-//                 'compare' => '='
-//             )
+// Modify the query to load the correct post
+function doctor_custom_query($query) {
+    if (!is_admin() && $query->is_main_query() && isset($query->query_vars['doctor_no'])) {
+        $doctor_number = $query->query_vars['doctor_no'];
+		var_dump($query->query_vars['doctor_no']);
+        $meta_query = array(
+            array(
+                'key' => 'doctor_no',
+                'value' => $doctor_number,
+                'compare' => '=',
+				'type' => 'NUMERIC'
+            )
+        );
+        $query->set('meta_query', $meta_query);
+    }
+}
+add_action('pre_get_posts', 'doctor_custom_query');
+
+// Modify the permalink structure
+function doctor_post_type_link($post_link, $post) {
+    if ($post->post_type == 'doctor') {
+        $doctor_number = get_field('doctor_no', $post->ID);
+        if ($doctor_number) {	
+            return home_url('/doctor/' . $doctor_number . '/');
+        }
+    }
+    return $post_link;
+}
+add_filter('post_type_link', 'doctor_post_type_link', 1, 2);
+// // Tải template phù hợp dựa trên product_code
+// function custom_product_template_redirect() {
+//     $Num = get_query_var('doctor_no');
+//     if ($Num) {
+//         $args = array(
+//             'post_type' => 'doctor',
+//             'meta_key' => 'doctor_no',
+//             'meta_value' => $Num,
 //         );
-//         $query->set('meta_query', $meta_query);
-//     }
-// }
-// add_action('pre_get_posts', 'doctor_custom_query');
+//         $query = new WP_Query($args);
 
-// // Modify the permalink structure
-// function doctor_post_type_link($post_link, $post) {
-//     if ($post->post_type == 'doctor') {
-//         $doctor_number = get_field('doctor_no', $post->ID);
-//         if ($doctor_number) {
-//             return home_url('/doctor/' . $doctor_number . '/');
+//         if ($query->have_posts()) {
+//             while ($query->have_posts()) {
+//                 $query->the_post();
+//                 include(get_template_directory() . '/single-doctor.php'); 
+//                 exit;
+//             }
+//         } else {
+//             global $wp_query;
+//             $wp_query->set_404();
+//             status_header(404);
+//             get_template_part(404);
+//             exit;
 //         }
 //     }
-//     return $post_link;
 // }
-// add_filter('post_type_link', 'doctor_post_type_link', 1, 2);
+// add_action('template_redirect', 'custom_product_template_redirect');
+
 add_action('init', function() {
     flush_rewrite_rules();
 });
